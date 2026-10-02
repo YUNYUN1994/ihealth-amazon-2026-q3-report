@@ -14,22 +14,11 @@ function send(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
-function safeEqual(left, right) {
-  if (typeof left !== 'string' || typeof right !== 'string' || left.length !== right.length) return false;
-  let diff = 0;
-  for (let index = 0; index < left.length; index += 1) diff |= left.charCodeAt(index) ^ right.charCodeAt(index);
-  return diff === 0;
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('allow', 'POST');
     return send(res, 405, { ok: false, message: '仅支持 POST 请求' });
   }
-  const expectedPassword = process.env.REPORT_REFRESH_PASSWORD;
-  if (!expectedPassword) return send(res, 503, { ok: false, message: 'Vercel 尚未配置 REPORT_REFRESH_PASSWORD' });
-  const suppliedPassword = String(req.headers['x-refresh-password'] || '');
-  if (!safeEqual(suppliedPassword, expectedPassword)) return send(res, 401, { ok: false, message: '刷新密码不正确' });
   try {
     const baseline = JSON.parse(await fs.readFile(fileURLToPath(baselineUrl), 'utf8'));
     const sheets = await fetchReportSheets();

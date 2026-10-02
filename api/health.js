@@ -5,7 +5,7 @@ export default function handler(req, res) {
     ok: true,
     service: 'iHealth Amazon Q3 report',
     feishuConfigured: Boolean(process.env.FEISHU_APP_ID && process.env.FEISHU_APP_SECRET),
-    refreshPasswordConfigured: Boolean(process.env.REPORT_REFRESH_PASSWORD),
+    refreshPasswordRequired: false,
     now: new Date().toISOString(),
   });
 }
