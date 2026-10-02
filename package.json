@@ -1,0 +1,11 @@
+{
+  "name": "ihealth-amazon-2026-q3-report",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check api/refresh.js && node --check api/health.js && node --check lib/feishu.mjs && node --check lib/report-builder.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
