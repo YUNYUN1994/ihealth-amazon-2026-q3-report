@@ -33,6 +33,9 @@ export default async function handler(req, res) {
         productRows: sheets.products.length - 1,
         targetRows: sheets.targets.length - 1,
         returnRows: sheets.returns.length - 1,
+        hardwareRows: data.rawCounts?.hardwareRows || 0,
+        testkitRows: data.rawCounts?.testkitRows || 0,
+        unclassifiedRows: data.rawCounts?.unclassifiedRows || 0,
       },
       data,
     });
