@@ -8,5 +8,3 @@ Thumbs.db
 .tcb
 node_modules
 package/
-tcb.tgz
-cloudbaserc.schema.json

@@ -1,0 +1,18 @@
+[Unit]
+Description=iHealth Amazon Q3 report
+After=network.target
+
+[Service]
+Type=simple
+User=ihealth
+WorkingDirectory=/opt/ihealth-amazon-2026-q3-report
+EnvironmentFile=/etc/ihealth-amazon-report.env
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3000
+ExecStart=/usr/bin/node /opt/ihealth-amazon-2026-q3-report/server.mjs
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
