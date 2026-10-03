@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check api/refresh.js && node --check api/health.js && node --check lib/feishu.mjs && node --check lib/report-builder.mjs"
+    "check": "node --check cloudbase-report-api.mjs && node --check lib/feishu.mjs && node --check lib/report-builder.mjs",
+    "deploy:cloudbase": "tcb deploy --yes"
   },
   "engines": {
     "node": "22.x"
