@@ -49,3 +49,22 @@ test('report validation rejects unresolved formula-based product mappings', () =
   const brokenProducts = [productHeaders, products[1], products[3]];
   assert.throws(() => buildReport({}, { products: brokenProducts, pm, targets: [], returns: [] }), /硬件数据有效性校验失败/);
 });
+
+
+test('hardware targets evaluate Feishu formula text instead of treating it as zero', () => {
+  const targetHeaders = ['SKU', '月份', '季度', '预计日销', '月需求', '售价', '折扣', '实际售价', '销售额', '净销售额', '佣金', 'FBA Fee', '仓储%', '仓储', '广告费', '单个推广费', '推广费比', '退款率', '退款', '总回款', '单个回款（计退货）', '单个回款（未计退货）', '单个成本', '总成本', '利润', '单个利润', '产品线', '新老品', '归属', 'ASIN'];
+  const targetRow = Array(30).fill('');
+  Object.assign(targetRow, {
+    0: '550BT', 1: '2026年1月份', 4: 100, 8: 2000, 14: 100, 19: 2000,
+    22: 10, 23: 'W2*E2', 24: 'T2-X2', 25: 'Y2/E2',
+  });
+  const report = buildReport({}, { products, pm, targets: [targetHeaders, targetRow], returns: [] });
+  const target = report.reportExtensions.hardware.targetAttainment.find((item) => item.name === '550');
+  assert.equal(target.target2026.cost, 1000);
+  assert.equal(target.target2026.profit, 1000);
+  assert.equal(target.attainment.profit, target.actual2026.profit / 1000);
+  assert.ok(report.reportExtensions.hardware.targetMeta.formulaCount >= 2);
+  assert.equal(report.reportExtensions.hardware.targetMeta.formulaFallbackCount, 0);
+});
+
+
