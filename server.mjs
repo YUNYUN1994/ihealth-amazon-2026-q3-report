@@ -8,7 +8,7 @@ import { buildReport } from './lib/report-builder.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const baselinePath = path.join(__dirname, 'data', 'baseline-report.json');
 const indexPath = path.join(__dirname, 'index.html');
-const appSlug = process.env.APP_SLUG || 'ihealth-q3-report';
+const appSlug = process.env.APP_SLUG || 'ihealth-report';
 const dataDir = process.env.APP_DATA_DIR || path.join(__dirname, 'data');
 const dataPath = path.join(dataDir, 'current-report.json');
 const statusPath = path.join(dataDir, 'refresh-status.json');

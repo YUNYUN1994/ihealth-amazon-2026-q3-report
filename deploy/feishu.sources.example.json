@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "appSlug": "ihealth-q3-report",
+  "appSlug": "ihealth-report",
   "description": "本应用独立白名单；允许与现有 Amazon 看板使用同一电子表格，但通过独立配置文件和独立读取逻辑访问。",
   "denyList": [
     {
