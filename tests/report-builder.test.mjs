@@ -78,3 +78,13 @@ test('PM formula-based total test count is evaluated instead of becoming zero', 
   assert.equal(parsed.length, 1);
   assert.equal(parsed[0].totalTest, 10);
 });
+
+test('testkit validation rejects sold rows with missing total test counts', () => {
+  const brokenPm = pm.map((row) => {
+    if (!Array.isArray(row) || row[3] !== 'COV-1') return row;
+    const copy = [...row];
+    copy[34] = 0;
+    return copy;
+  });
+  assert.throws(() => buildReport({}, { products, pm: brokenPm, targets: [], returns: [] }), /测试盒数据有效性校验失败/);
+});
