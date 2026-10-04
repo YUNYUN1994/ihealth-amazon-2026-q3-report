@@ -35,7 +35,7 @@ async function atomicWrite(file, value) {
   await fs.writeFile(tmp, value, 'utf8');
   await fs.rename(tmp, file);
 }
-async function writeStatus(status) { await atomicWrite(statusPath, JSON.stringify({ appSlug, ...status }, null, 2) + '\\n'); }
+async function writeStatus(status) { await atomicWrite(statusPath, JSON.stringify({ appSlug, ...status }, null, 2) + '\n'); }
 async function loadData() {
   try { currentData = JSON.parse(await fs.readFile(dataPath, 'utf8')); }
   catch { currentData = JSON.parse(await fs.readFile(baselinePath, 'utf8')); }
