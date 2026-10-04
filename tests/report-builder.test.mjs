@@ -68,3 +68,13 @@ test('hardware targets evaluate Feishu formula text instead of treating it as ze
 });
 
 
+
+
+test('PM formula-based total test count is evaluated instead of becoming zero', () => {
+  const row = pmRow(2026, 'COV-1', 'ACOV', 10, '=VLOOKUP(D2,\'所有产品对应表\'!B:D,3,0)', '=VLOOKUP(D2,\'所有产品对应表\'!B:F,5,0)', '=VLOOKUP(D2,\'所有产品对应表\'!B:M,12,0)');
+  row[33] = 2;
+  row[34] = 'AH2*F2';
+  const parsed = parsePm([pmHeaders, row], buildProductMapping(products));
+  assert.equal(parsed.length, 1);
+  assert.equal(parsed[0].totalTest, 20);
+});
