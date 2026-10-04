@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "appSlug": "ihealth-q3-report",
+  "description": "本应用独立白名单；允许与现有 Amazon 看板使用同一电子表格，但通过独立配置文件和独立读取逻辑访问。",
+  "denyList": [
+    {
+      "title": "引用表-不读取",
+      "reason": "明确禁止读取"
+    },
+    {
+      "title": "WOOT登记表",
+      "reason": "默认禁止读取"
+    }
+  ],
+  "sources": [
+    {
+      "sourceKey": "amazon-q3-source",
+      "spreadsheetToken": "replace_with_spreadsheet_token",
+      "sheets": [
+        {
+          "sourceKey": "products",
+          "sheetId": "0AyhfQ",
+          "expectedTitle": "所有产品对应表",
+          "range": "0AyhfQ!A1:O1000",
+          "required": true,
+          "minRows": 2,
+          "minCols": 2,
+          "requiredHeaders": [
+            [
+              "ASIN",
+              "asin"
+            ],
+            [
+              "产品名称",
+              "商品名称"
+            ]
+          ]
+        },
+        {
+          "sourceKey": "targets",
+          "sheetId": "5IvgIM",
+          "expectedTitle": "硬件_2026年目标数据",
+          "range": "5IvgIM!A1:AE1500",
+          "required": true,
+          "minRows": 2,
+          "minCols": 2
+        },
+        {
+          "sourceKey": "pm",
+          "sheetId": "1rDHzo",
+          "expectedTitle": "PM_年月数据",
+          "range": "1rDHzo!A1:AM3000",
+          "required": true,
+          "minRows": 101,
+          "minCols": 10,
+          "requiredHeaders": [
+            [
+              "年份",
+              "年度"
+            ],
+            [
+              "月份",
+              "年月"
+            ],
+            [
+              "销量"
+            ],
+            [
+              "销售额"
+            ]
+          ]
+        },
+        {
+          "sourceKey": "returns",
+          "sheetId": "yi4iux",
+          "expectedTitle": "退货-汇报用",
+          "range": "yi4iux!A1:N500",
+          "required": true,
+          "minRows": 3,
+          "minCols": 2
+        }
+      ]
+    }
+  ]
+}
