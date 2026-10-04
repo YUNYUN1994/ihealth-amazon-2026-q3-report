@@ -5,7 +5,8 @@
   "scripts": {
     "check": "node --check server.mjs && node --check lib/feishu.mjs && node --check lib/report-builder.mjs",
     "start": "node --env-file-if-exists=.env server.mjs",
-    "start:prod": "node server.mjs"
+    "start:prod": "node server.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "engines": {
     "node": ">=22"
