@@ -10,9 +10,10 @@ const products = [
   ['ACOV', 'COV-1', 'ACOV', 'COV', '老品', 'COV', 1, 'COV', 'COV', 'COV', 1, 1, '测试盒', 'COV测试盒'],
 ];
 const pmHeaders = ['年份', '月份', '季度', 'MSKU', 'ASIN', '销量', '销售额', '促销折扣', 'Total(销售额-促销-FBA-佣金）', 'Adjustment', 'Coupon Fee', '广告费', 'Refund', '基本仓储费', '超龄仓储费', 'Deal Fee', '退款数量', '退款率', '退货处理费', '总回款', '单个回款', '单个推广费', '单个成本', '总成本', '利润', '毛利率', '推广费比', '成交价', '均价', '净销售额', '产品线', '归属', '新老品', 'Test数', '总Test数', '分类1', '分类2', '分类3', '分类4'];
-function pmRow(year, msku, asin, units, productLineFormula, ownerFormula, kindFormula, totalTest = 0) {
+function pmRow(year, msku, asin, units, productLineFormula, ownerFormula, kindFormula, totalTest = 0, month = 7) {
   const row = Array(39).fill('');
-  Object.assign(row, { 0: year, 1: `${year}年7月份`, 2: 'Q3', 3: msku, 4: asin, 5: units, 6: units * 20, 11: units, 16: 0, 18: 0, 19: units * 10, 23: units * 5, 24: units * 5, 29: units * 18, 30: productLineFormula, 31: ownerFormula, 32: 'VLOOKUP(D2,\'所有产品对应表\'!B:E,4,0)', 33: 1, 34: totalTest, 38: kindFormula });
+  const quarter = month <= 3 ? 'Q1' : month <= 6 ? 'Q2' : 'Q3';
+  Object.assign(row, { 0: year, 1: `${year}年${month}月份`, 2: quarter, 3: msku, 4: asin, 5: units, 6: units * 20, 11: units, 16: 0, 18: 0, 19: units * 10, 23: units * 5, 24: units * 5, 29: units * 18, 30: productLineFormula, 31: ownerFormula, 32: 'VLOOKUP(D2,\'所有产品对应表\'!B:E,4,0)', 33: 1, 34: totalTest, 38: kindFormula });
   return row;
 }
 const pm = [pmHeaders];
@@ -185,8 +186,12 @@ test('market sheet parser validates three blocks and treats incomplete September
   }
 });
 
-test('market overview aggregates Q1-Q3, maps iHealth categories and calculates share and yoy', () => {
-  const report = buildReport({}, { products, pm, targets: [], returns: [], market: marketFixture() });
+test('market overview aggregates Q1-Q3, includes September iHealth units when only market data is incomplete, and calculates share and yoy', () => {
+  const pmWithSeptember = pm.map((row) => [...row]);
+  pmWithSeptember.push(pmRow(2026, '550BT', 'A550', 31, '=VLOOKUP(D2,\'所有产品对应表\'!B:D,3,0)', '=VLOOKUP(D2,\'所有产品对应表\'!B:F,5,0)', '=VLOOKUP(D2,\'所有产品对应表\'!B:M,12,0)', 0, 9));
+  pmWithSeptember.push(pmRow(2026, 'FBAPT3', 'APT3', 17, '=VLOOKUP(D2,\'所有产品对应表\'!B:D,3,0)', '=VLOOKUP(D2,\'所有产品对应表\'!B:F,5,0)', '=VLOOKUP(D2,\'所有产品对应表\'!B:M,12,0)', 0, 9));
+  pmWithSeptember.push(pmRow(2026, 'COV-1', 'ACOV', 23, '=VLOOKUP(D2,\'所有产品对应表\'!B:D,3,0)', '=VLOOKUP(D2,\'所有产品对应表\'!B:F,5,0)', '=VLOOKUP(D2,\'所有产品对应表\'!B:M,12,0)', 23, 9));
+  const report = buildReport({}, { products, pm: pmWithSeptember, targets: [], returns: [], market: marketFixture() });
   const market = report.reportExtensions.market;
   assert.equal(market.categories.length, 3);
   assert.deepEqual(market.incompleteMonths, [9]);
@@ -196,10 +201,15 @@ test('market overview aggregates Q1-Q3, maps iHealth categories and calculates s
   assert.equal(testkit.years[2025].marketSearch, 9000);
   assert.equal(testkit.years[2026].marketSearch, 9600);
   assert.equal(testkit.years[2026].marketUnits, 4800);
-  assert.equal(testkit.years[2026].iHealthUnits, 200);
-  assert.equal(testkit.years[2026].marketShare, 200 / 4800);
-  assert.equal(bloodPressure.years[2026].iHealthUnits, 2000);
-  assert.equal(thermometer.years[2026].iHealthUnits, 1000);
+  assert.equal(testkit.years[2026].iHealthUnits, 223);
+  assert.equal(testkit.years[2026].marketShare, 223 / 4800);
+  assert.equal(testkit.years[2026].months.find((item) => item.month === 9).iHealthUnits, 23);
+  assert.equal(bloodPressure.years[2026].iHealthUnits, 2031);
+  assert.equal(bloodPressure.years[2026].months.find((item) => item.month === 9).iHealthUnits, 31);
+  assert.equal(thermometer.years[2026].iHealthUnits, 1017);
+  assert.equal(thermometer.years[2026].months.find((item) => item.month === 9).iHealthUnits, 17);
+  assert.match(market.incompleteNotice, /iHealth实际销量已包含对应月份数据/);
+  assert.match(market.incompleteNotice, /市场占有率为暂算值/);
   assert.equal(testkit.yoy.marketSearch, 9600 / 9000 - 1);
 });
 
