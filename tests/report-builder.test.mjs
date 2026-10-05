@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildProductMapping, buildReport, parsePm } from '../lib/report-builder.mjs';
+import { buildProductMapping, buildReport, parseMarketData, parsePm } from '../lib/report-builder.mjs';
 
 const productHeaders = ['ASIN', 'MSKU', 'ASIN', '产品线', '新老分类', '归属', 'Test数', '做表分类', '做表分类2', '做表分类3', '成本', '26年Q2', '分类', '产品名称'];
 const products = [
@@ -151,4 +151,63 @@ test('hardware return comparison matches independent yearly ASIN columns and app
     /退货数据有效性校验失败/,
     'a shifted or incomplete return-sheet layout must fail instead of publishing incorrect rates',
   );
+});
+
+
+function marketFixture() {
+  const values = [
+    ['测试盒', '', '', '', '', '', '血压计', '', '', '', '', '', '温度计'],
+    ['年份', '季度', '月份', '销量（选品指南针）', '搜索量（亚马逊查询绩效）', '', '年份', '季度', '月份', '大盘搜索量', '大盘销量', '', '年份', '季度', '月份', '大盘搜索量', '大盘销量', 'Baby类目', '个护类目'],
+  ];
+  for (const year of [2025, 2026]) for (let month = 1; month <= 9; month += 1) {
+    const incomplete = year === 2026 && month === 9;
+    const ym = year * 100 + month;
+    const row = Array(20).fill('');
+    Object.assign(row, {
+      0: year, 1: month <= 3 ? 'Q1' : month <= 6 ? 'Q2' : 'Q3', 2: ym, 3: incomplete ? '' : year === 2025 ? 500 : 600, 4: incomplete ? '' : year === 2025 ? 1000 : 1200,
+      6: year, 7: month <= 3 ? 'Q1' : month <= 6 ? 'Q2' : 'Q3', 8: ym, 9: incomplete ? '' : year === 2025 ? 2000 : 2200, 10: incomplete ? '' : year === 2025 ? 1000 : 1100,
+      12: year, 13: month <= 3 ? 'Q1' : month <= 6 ? 'Q2' : 'Q3', 14: ym, 15: incomplete ? '' : year === 2025 ? 3000 : 3300, 16: incomplete ? '' : year === 2025 ? 1500 : 1650, 17: incomplete ? '' : year === 2025 ? 750 : 825, 18: incomplete ? '' : year === 2025 ? 750 : 825,
+    });
+    values.push(row);
+  }
+  return values;
+}
+
+test('market sheet parser validates three blocks and treats incomplete September 2026 as zero', () => {
+  const parsed = parseMarketData(marketFixture());
+  assert.equal(parsed.records.length, 54);
+  assert.deepEqual(parsed.incompleteMonths, [9]);
+  for (const key of ['testkit', 'bloodPressure', 'thermometer']) {
+    const september = parsed.records.find((row) => row.categoryKey === key && row.year === 2026 && row.month === 9);
+    assert.equal(september.marketSearch, 0);
+    assert.equal(september.marketUnits, 0);
+    assert.equal(september.incomplete, true);
+  }
+});
+
+test('market overview aggregates Q1-Q3, maps iHealth categories and calculates share and yoy', () => {
+  const report = buildReport({}, { products, pm, targets: [], returns: [], market: marketFixture() });
+  const market = report.reportExtensions.market;
+  assert.equal(market.categories.length, 3);
+  assert.deepEqual(market.incompleteMonths, [9]);
+  const testkit = market.categories.find((item) => item.key === 'testkit');
+  const bloodPressure = market.categories.find((item) => item.key === 'bloodPressure');
+  const thermometer = market.categories.find((item) => item.key === 'thermometer');
+  assert.equal(testkit.years[2025].marketSearch, 9000);
+  assert.equal(testkit.years[2026].marketSearch, 9600);
+  assert.equal(testkit.years[2026].marketUnits, 4800);
+  assert.equal(testkit.years[2026].iHealthUnits, 200);
+  assert.equal(testkit.years[2026].marketShare, 200 / 4800);
+  assert.equal(bloodPressure.years[2026].iHealthUnits, 2000);
+  assert.equal(thermometer.years[2026].iHealthUnits, 1000);
+  assert.equal(testkit.yoy.marketSearch, 9600 / 9000 - 1);
+});
+
+test('market sheet parser rejects shifted layouts and unexpected missing values', () => {
+  const shifted = marketFixture();
+  shifted[0][6] = '血压仪';
+  assert.throws(() => parseMarketData(shifted), /血压计区块标题缺失或错位/);
+  const missing = marketFixture();
+  missing[3][4] = '';
+  assert.throws(() => parseMarketData(missing), /2025年2月搜索量或销量为空/);
 });

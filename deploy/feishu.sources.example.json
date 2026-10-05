@@ -78,6 +78,15 @@
           "required": true,
           "minRows": 3,
           "minCols": 2
+        },
+        {
+          "sourceKey": "market",
+          "sheetId": "xwXjmU",
+          "expectedTitle": "大盘数据-汇报用",
+          "range": "xwXjmU!A1:T201",
+          "required": true,
+          "minRows": 59,
+          "minCols": 17
         }
       ]
     }

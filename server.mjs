@@ -53,7 +53,7 @@ async function refreshReport() {
       const data = buildReport(baseline, sheets);
       await atomicWrite(dataPath, JSON.stringify(data));
       currentData = data;
-      const result = { ok: true, appSlug, message: '飞书数据已更新', refreshedAt: data.meta?.refreshedAt, dataThrough: data.meta?.dataThrough, sourceConfigVersion: sheets.sourceConfigVersion, counts: { pmRows: Math.max(0, sheets.pm.length - 1), productRows: Math.max(0, sheets.products.length - 1), targetRows: Math.max(0, sheets.targets.length - 1), returnRows: Math.max(0, sheets.returns.length - 1), hardwareRows: data.rawCounts?.hardwareRows || 0, testkitRows: data.rawCounts?.testkitRows || 0, unclassifiedRows: data.rawCounts?.unclassifiedRows || 0 }, data };
+      const result = { ok: true, appSlug, message: '飞书数据已更新', refreshedAt: data.meta?.refreshedAt, dataThrough: data.meta?.dataThrough, sourceConfigVersion: sheets.sourceConfigVersion, counts: { pmRows: Math.max(0, sheets.pm.length - 1), productRows: Math.max(0, sheets.products.length - 1), targetRows: Math.max(0, sheets.targets.length - 1), returnRows: Math.max(0, sheets.returns.length - 1), marketRows: Math.max(0, sheets.market.length - 2), hardwareRows: data.rawCounts?.hardwareRows || 0, testkitRows: data.rawCounts?.testkitRows || 0, unclassifiedRows: data.rawCounts?.unclassifiedRows || 0 }, data };
       await writeStatus({ state: 'success', finishedAt: new Date().toISOString(), refreshedAt: result.refreshedAt, dataThrough: result.dataThrough, counts: result.counts });
       return result;
     } catch (error) {
