@@ -90,7 +90,7 @@ test('testkit validation rejects sold rows with missing total test counts', () =
 });
 
 
-test('hardware return comparison includes 2026 top 10 by units plus products with return-rate rise above 1 percentage point', () => {
+test('hardware return comparison matches independent yearly ASIN columns and applies the exact scope', () => {
   const returnProducts = [productHeaders];
   const returnPm = [pmHeaders];
   returnProducts.push(products[3]);
@@ -99,9 +99,10 @@ test('hardware return comparison includes 2026 top 10 by units plus products wit
     returnPm.push(pmRow(2026, 'COV-1', 'ACOV', 10, 'COV', 'COV', '测试盒', 10));
   }
   const returnSheet = [
-    ['ASIN', '2025评分', '2025退款率', '2025退货率', '2026评分', '2026退款率', '2026退货率', '', '', '产品线', '360天平均退货率'],
-    ['', '', '', '', '', '', '', '', '', '血压计', 0.05],
+    ['ASIN', '2025年截止Q3', '', '', '', 'ASIN', '2026年截止Q3', '', '', '', '', '产品线', '亚马逊360天平均退货率（商机探测器）'],
+    ['', '评分', '退款率', '退货率', '', '', '评分', '退款率', '退货率', '', '', '血压计', 0.0332],
   ];
+  const yearlyReturns = [];
   for (let i = 1; i <= 12; i += 1) {
     const msku = `HW-${i}`;
     const asin = `AHW${i}`;
@@ -110,16 +111,44 @@ test('hardware return comparison includes 2026 top 10 by units plus products wit
       returnPm.push(pmRow(2025, msku, asin, 100, '血压计', msku, '硬件'));
       returnPm.push(pmRow(2026, msku, asin, 1300 - i * 100, '血压计', msku, '硬件'));
     }
-    const refund2026 = i === 11 ? 0.09 : 0.04;
-    const return2026 = i === 12 ? 0.061 : i === 11 ? 0.06 : 0.04;
-    returnSheet.push([asin, 4.5, 0.04, 0.05, 4.4, refund2026, return2026]);
+    yearlyReturns.push({
+      asin,
+      rating2025: 3 + i / 100,
+      refund2025: 0.04,
+      return2025: 0.05,
+      rating2026: 4 + i / 100,
+      refund2026: i === 11 ? 0.09 : 0.04,
+      return2026: i === 12 ? 0.061 : i === 11 ? 0.06 : 0.04,
+    });
+  }
+  const reversed2026 = [...yearlyReturns].reverse();
+  for (let index = 0; index < yearlyReturns.length; index += 1) {
+    const prior = yearlyReturns[index];
+    const current = reversed2026[index];
+    returnSheet.push([
+      prior.asin, prior.rating2025, prior.refund2025, prior.return2025, '',
+      current.asin, current.rating2026, current.refund2026, current.return2026, '', '', '', '',
+    ]);
   }
   const report = buildReport({}, { products: returnProducts, pm: returnPm, targets: [], returns: returnSheet });
   const rows = report.reportExtensions.hardware.returns;
   const included = new Set(rows.map((item) => item.msku));
   assert.equal(rows.length, 11);
   for (let i = 1; i <= 10; i += 1) assert.ok(included.has(`HW-${i}`), `HW-${i} should be included as a 2026 top-10 product`);
-  assert.equal(included.has('HW-11'), false, 'refund-rate rise alone must not add a product outside the top 10');
+  assert.equal(included.has('HW-11'), false, 'refund-rate rise and an exact 1-point return-rate rise must not add a product outside the top 10');
   assert.ok(included.has('HW-12'), 'return-rate rise above 1 percentage point should add a product outside the top 10');
-  assert.equal(rows.find((item) => item.msku === 'HW-12').materialAlert, true);
+  const hw12 = rows.find((item) => item.msku === 'HW-12');
+  assert.equal(hw12.years[2025].rating, 3.12, '2025 values must match by the 2025 ASIN column');
+  assert.equal(hw12.years[2026].rating, 4.12, '2026 values must match by the independent 2026 ASIN column');
+  assert.equal(hw12.years[2026].returnRate, 0.061);
+  assert.ok(Math.abs(hw12.returnRise - 0.011) < 1e-12);
+  assert.equal(hw12.materialAlert, true);
+  assert.equal(hw12.amazon360, 0.0332, '360-day average must come from columns 11 and 12');
+  const malformedReturnSheet = returnSheet.map((row) => [...row]);
+  malformedReturnSheet[0][5] = '';
+  assert.throws(
+    () => buildReport({}, { products: returnProducts, pm: returnPm, targets: [], returns: malformedReturnSheet }),
+    /退货数据有效性校验失败/,
+    'a shifted or incomplete return-sheet layout must fail instead of publishing incorrect rates',
+  );
 });
