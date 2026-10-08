@@ -36,7 +36,8 @@
 
 /* Let the overview quarter comparison use the full content width. */
 #overviewQuarterCards.quarter-grid{display:block}
-#overviewQuarterCards .overview-quarter-table{min-width:0}
+#overviewQuarterCards .landscape-period-scroll{width:100%;overflow-x:auto}
+#overviewQuarterCards .overview-quarter-table{width:100%;min-width:0;table-layout:fixed}
 @media(max-width:700px){#overviewQuarterCards .overview-quarter-table{min-width:650px}}
 
 /* Period overview: each time span is a row, with metrics as columns. */
