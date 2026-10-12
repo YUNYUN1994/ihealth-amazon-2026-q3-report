@@ -110,6 +110,103 @@ tbody .yoy-up{color:#4f8f35!important}tbody .yoy-down{color:#df4738!important}
 .returns-table tbody td.year-yoy .yoy-up,.returns-table tbody td.year-yoy .yoy-down{font-weight:850}
 .hardware-table tbody tr.focus-year-row>*,.hardware-table tbody tr.table-year-row>*{color:inherit}
 </style>
+
+<style id="hardware-detail-table-fit">
+/* Keep the three hardware detail tables readable without desktop side-scrolling. */
+@media(min-width:1200px){
+  #hardware-detail{margin-inline:-28px}
+}
+#hardware-detail .report-block{padding:16px 14px}
+#hardware-detail .report-table-wrap,
+#hardware-detail .sku-table-wrap{overflow-x:hidden}
+#hardware-detail .hardware-table{
+  width:100%;
+  max-width:100%;
+  min-width:0!important;
+  table-layout:fixed!important;
+}
+#hardware-detail .hardware-sku-table thead tr.table-metric-row > :nth-child(1),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(2),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(7){width:5.5%}
+#hardware-detail .hardware-sku-table thead tr.table-metric-row > :nth-child(2),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(3),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(8){width:8.5%}
+#hardware-detail .hardware-sku-table thead tr.table-metric-row > :nth-child(3),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(4),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(9){width:6%}
+#hardware-detail .hardware-sku-table thead tr.table-metric-row > :nth-child(4),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(5),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(10){width:7.8%}
+#hardware-detail .hardware-sku-table thead tr.table-metric-row > :nth-child(5),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(6),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(11){width:4.7%}
+#hardware-detail .hardware-sku-table th:first-child,
+#hardware-detail .hardware-sku-table td:first-child{width:15%}
+#hardware-detail .hardware-sku-table th.year-yoy,
+#hardware-detail .hardware-sku-table td.year-yoy{width:6.67%;min-width:0!important}
+#hardware-detail .hardware-focus-table th:first-child,
+#hardware-detail .hardware-focus-table td:first-child{width:15%}
+#hardware-detail .hardware-focus-table th.year-yoy,
+#hardware-detail .hardware-focus-table td.year-yoy{width:7%!important;min-width:0!important}
+#hardware-detail .hardware-table th,
+#hardware-detail .hardware-table td{padding-left:3px;padding-right:3px}
+#hardware-detail .hardware-table thead th{
+  font-size:11px;
+  line-height:1.15;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+#hardware-detail .hardware-table tbody td,
+#hardware-detail .hardware-table tbody th{font-size:9px}
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(1){width:130px}
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(2),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(7){width:60px}
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(3),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(8){width:86px}
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(4),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(9){width:48px}
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(5),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(10){width:70px}
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(6),
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(11){width:50px}
+#hardware-detail .hardware-sku-table tbody tr > :nth-child(n+12){width:78px}
+#hardware-detail .hardware-sku-table th.year-yoy,
+#hardware-detail .hardware-sku-table td.year-yoy{width:78px}
+#hardware-detail .hardware-sku-table .yoy-inline,
+#hardware-detail .hardware-focus-table .yoy-inline{
+  min-width:0!important;
+  width:auto!important;
+  margin-left:0!important;
+  padding:2px 3px!important;
+  font-size:8px!important;
+}
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(1){width:130px}
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(2),
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(8){width:62px}
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(3),
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(9){width:78px}
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(4),
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(10){width:62px}
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(5),
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(11){width:48px}
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(6),
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(12){width:56px}
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(7),
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(13){width:54px}
+#hardware-detail .hardware-focus-table tbody tr > :nth-child(n+14){width:76px}
+#hardware-detail .hardware-focus-table th.year-yoy,
+#hardware-detail .hardware-focus-table td.year-yoy{width:76px}
+#hardware-detail .returns-table{min-width:0}
+#hardware-detail .returns-table tbody tr > :nth-child(1){width:180px}
+#hardware-detail .returns-table tbody tr > :nth-child(n+2):nth-child(-n+9){width:62px}
+#hardware-detail .returns-table tbody tr > :nth-child(5),
+#hardware-detail .returns-table tbody tr > :nth-child(9){width:80px}
+#hardware-detail .returns-table tbody tr > :nth-child(10){width:95px}
+@media(min-width:1200px) and (max-width:1399px){
+  #hardware-detail .hardware-table tbody td,
+  #hardware-detail .hardware-table tbody th{font-size:8px!important}
+  #hardware-detail .hardware-table .yoy-inline{font-size:7px!important}
+}
 </style>
 <style id="ihealth-dashboard-ui-refresh">
 :root{
@@ -270,7 +367,7 @@ table.product-line-table thead th.col-2025,table.product-line-table thead th.col
   .market-table tbody th,.market-table tbody td{font-size:11px}
   .market-table .market-share-delta{font-size:10px}
 }
-</style></style><style id="returns-table-readability">
+</style><style id="returns-table-readability">
 /* Keep the 2026 return data column neutral so highlighted rate changes stay legible. */
 .returns-table tbody td.year-2026{background:#f6f8fa!important}
 </style><style id="table-data-blue-readability">
@@ -599,6 +696,38 @@ table.product-line-table tbody th.col-yoy{
   #testkitMonthlyTable td.year-2026 > .table-yoy {
     font-size:9px!important;
   }
+}
+</style>
+<style id="hardware-detail-table-final-fit">
+/* Final overrides keep the three detail tables fully visible within the desktop content width. */
+#hardware-detail .hardware-table thead th{
+  font-size:11px!important;
+  line-height:1.15!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere;
+}
+#hardware-detail .hardware-table tbody td,
+#hardware-detail .hardware-table tbody th{
+  font-size:9px!important;
+  line-height:1.2!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere;
+}
+#hardware-detail .hardware-table tbody td:first-child,
+#hardware-detail .hardware-table tbody th:first-child{font-size:10px!important}
+#hardware-detail .hardware-table tbody td.year-yoy,
+#hardware-detail .hardware-table tbody th.year-yoy,
+#hardware-detail .hardware-table .yoy-inline{
+  white-space:nowrap!important;
+  overflow-wrap:normal;
+}
+#hardware-detail .hardware-table .yoy-inline{font-size:8px!important}
+@media(min-width:1200px) and (max-width:1399px){
+  #hardware-detail .hardware-table tbody td,
+  #hardware-detail .hardware-table tbody th{font-size:8px!important}
+  #hardware-detail .hardware-table tbody td:first-child,
+  #hardware-detail .hardware-table tbody th:first-child{font-size:9px!important}
+  #hardware-detail .hardware-table .yoy-inline{font-size:7px!important}
 }
 </style>
 </head><body><div class="page"><aside class="sidebar"><div class="brand"><div class="brand-logo">iHealth<sup>®</sup></div><span class="brand-divider" aria-hidden="true"></span><div class="brand-copy"><strong>季度汇报</strong><span>Amazon · 2026 Q3</span></div></div><p class="side-title">REPORT SECTIONS</p><nav class="toc report-side-switch"><button type="button" data-report="overview"><b>01</b>汇报总览</button><button type="button" data-report="hardware"><b>02</b>硬件汇报</button><button type="button" data-report="testkit"><b>03</b>测试盒汇报</button></nav><a class="sidebar-link" href="https://ch480oguy0.feishu.cn/sheets/R4Bks0mjWhnjDbtYmwdcffFsnZd?sheet=2yzuLZ" target="_blank" rel="noopener noreferrer"><span>↗</span>打开飞书数据</a><div class="side-note"><div class="status"><i class="dot"></i>数据截至 2026年9月</div></div></aside><main class="main"><div class="mobile-bar"><strong>iHealth_Amazon 2026 Q3</strong><a href="#report-switch">选择汇报 ↓</a></div><div class="content">
