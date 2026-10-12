@@ -50,6 +50,30 @@ test('report validation prevents the 550/PT3 zero-category regression', () => {
   assert.equal(annualSummary.find((item) => item.name === 'PT3').units, 1000);
 });
 
+test('hardware annual categories use the Feishu AK/category2 mapping', () => {
+  const stripProducts = [
+    ...products,
+    ['ASTRIP', 'EGS-2003-stickerless', 'ASTRIP', '血糖仪', '老品', '其他', 1, '其他', '血糖试纸', '血糖试纸', 1, 1, '硬件', '血糖试纸'],
+  ];
+  const stripPm = [
+    pmHeaders,
+    pmRow(2025, 'EGS-2003-stickerless', 'ASTRIP', 29969, '血糖仪', '其他', '=VLOOKUP(D2,\'所有产品对应表\'!B:M,12,0)'),
+    pmRow(2026, 'EGS-2003-stickerless', 'ASTRIP', 29633, '血糖仪', '其他', '=VLOOKUP(D2,\'所有产品对应表\'!B:M,12,0)'),
+  ];
+  stripPm[1][36] = '=VLOOKUP(D2,\'所有产品对应表\'!B:I,8,0)';
+  stripPm[2][36] = '=VLOOKUP(D3,\'所有产品对应表\'!B:I,8,0)';
+  stripPm.push(pmRow(2025, 'COV-1', 'ACOV', 10, 'COV', 'COV', '=VLOOKUP(D2,\'所有产品对应表\'!B:M,12,0)', 10));
+  for (let i = stripPm.length; i < 102; i += 1) {
+    stripPm.push(pmRow(i % 2 ? 2025 : 2026, 'EGS-2003-stickerless', 'ASTRIP', 0, '血糖仪', '其他', '=VLOOKUP(D2,\'所有产品对应表\'!B:M,12,0)'));
+  }
+  const report = buildReport({}, { products: stripProducts, pm: stripPm, targets: [], returns: [] });
+  const summary = report.reportExtensions.hardware.annualSummary;
+  assert.equal(summary[2025].find((item) => item.name === '血糖试纸').units, 29969);
+  assert.equal(summary[2026].find((item) => item.name === '血糖试纸').units, 29633);
+  assert.equal(summary[2025].find((item) => item.name === '新品').units, 0);
+  assert.equal(summary[2026].find((item) => item.name === '新品').units, 0);
+});
+
 test('report validation rejects unresolved formula-based product mappings', () => {
   const brokenProducts = [productHeaders, products[1], products[3]];
   assert.throws(() => buildReport({}, { products: brokenProducts, pm, targets: [], returns: [] }), /硬件数据有效性校验失败/);
