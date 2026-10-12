@@ -44,6 +44,10 @@ test('report validation prevents the 550/PT3 zero-category regression', () => {
   assert.ok(categories.find((item) => item.name === 'PT3').units > 0);
   assert.equal(report.reportExtensions.hardware.dataQuality.unresolvedMappingRows, 0);
   assert.equal(report.reportExtensions.hardware.dataQuality.missingProductLineRows, 0);
+  const annualSummary = report.reportExtensions.hardware.annualSummary[2026];
+  assert.deepEqual(annualSummary.map((item) => item.name), ['550BT', 'PT3', 'BG5S100', '血糖试纸', '新品', '其他硬件', '总计']);
+  assert.equal(annualSummary.find((item) => item.name === '550BT').units, 2000);
+  assert.equal(annualSummary.find((item) => item.name === 'PT3').units, 1000);
 });
 
 test('report validation rejects unresolved formula-based product mappings', () => {
