@@ -814,4 +814,171 @@ document.querySelectorAll('.year-group-head.year-2026,.returns-year-head.year-20
 (()=>{const table=document.querySelector('.hardware-sku-table'),body=document.getElementById('hardwareSkuAnnualTable');if(!table||!body)return;const parseValue=cell=>{const text=String(cell?.textContent||'').replace(/,/g,'').trim();if(!text||text==='—')return 0;const match=text.match(/-?\d+(?:\.\d+)?/);if(!match)return 0;const value=Number(match[0]);return text.includes('-')?-Math.abs(value):value};const yoy=(current,previous)=>{if(previous===0)return current===0?'<span class="yoy-inline yoy-neutral">—</span>':'<span class="yoy-inline yoy-up">↑ 新增</span>';if(previous<0&&current>=0)return '<span class="yoy-inline yoy-neutral">由负转正</span>';if(previous>=0&&current<0)return '<span class="yoy-inline yoy-neutral">由正转负</span>';if(previous<0||current<0)return '<span class="yoy-inline yoy-neutral">—</span>';const rate=current/previous-1;if(rate===0)return '<span class="yoy-inline yoy-neutral">—</span>';return '<span class="yoy-inline '+(rate>0?'yoy-up':'yoy-down')+'">'+(rate>0?'↑':'↓')+' '+(Math.abs(rate)*100).toFixed(1)+'%</span>'};const enhance=()=>{const header=table.tHead?.rows[0];if(header&&!header.querySelector('[data-sort-key="payoutYoy"]')){const unitsHeader=header.querySelector('[data-sort-key="unitsYoy"]');if(unitsHeader){const payoutHeader=document.createElement('th');payoutHeader.rowSpan=2;payoutHeader.className='year-yoy';payoutHeader.dataset.sortKey='payoutYoy';payoutHeader.textContent='回款同比';const profitHeader=document.createElement('th');profitHeader.rowSpan=2;profitHeader.className='year-yoy';profitHeader.dataset.sortKey='profitYoy';profitHeader.textContent='利润同比';unitsHeader.after(payoutHeader,profitHeader)}}body.querySelectorAll('tr').forEach(row=>{if(row.cells.length<14){const payoutCell=document.createElement('td');payoutCell.className='year-yoy yoy-cell';payoutCell.innerHTML=yoy(parseValue(row.cells[7]),parseValue(row.cells[2]));const profitCell=document.createElement('td');profitCell.className='year-yoy yoy-cell';profitCell.innerHTML=yoy(parseValue(row.cells[9]),parseValue(row.cells[4]));row.append(payoutCell,profitCell)}})};enhance();new MutationObserver(enhance).observe(body,{childList:true})})();
 </script><script id="hardware-focus-cpa-yoy-column">
 (()=>{const table=document.querySelector('.hardware-focus-table'),body=document.getElementById('hardwareFocusTable');if(!table||!body)return;const style=document.createElement('style');style.id='hardware-focus-cpa-yoy-style';style.textContent='.hardware-focus-table th.year-yoy,.hardware-focus-table td.year-yoy{width:112px;min-width:112px}.hardware-focus-table th.units-yoy,.hardware-focus-table td.units-yoy{right:var(--hardware-cpa-yoy-width,112px)!important}.hardware-focus-table th.cpa-yoy,.hardware-focus-table td.cpa-yoy{right:0!important}.hardware-focus-table th.cpa-yoy{background:#eef7ff;color:#24669b}.hardware-focus-table td.cpa-yoy{background:#f5faff}.hardware-focus-table tbody tr:hover td.cpa-yoy{background:#eaf4ff}';document.head.appendChild(style);const parseValue=cell=>{const text=String(cell?.textContent||'').replace(/,/g,'').trim();if(!text||text==='—')return 0;const match=text.match(/-?\d+(?:\.\d+)?/);if(!match)return 0;const value=Number(match[0]);return text.includes('-')?-Math.abs(value):value};const yoy=(current,previous)=>{if(previous===0)return current===0?'<span class="yoy-inline yoy-neutral">—</span>':'<span class="yoy-inline yoy-up">↑ 新增</span>';if(previous<0&&current>=0)return '<span class="yoy-inline yoy-neutral">由负转正</span>';if(previous>=0&&current<0)return '<span class="yoy-inline yoy-neutral">由正转负</span>';if(previous<0||current<0)return '<span class="yoy-inline yoy-neutral">—</span>';const rate=current/previous-1;if(rate===0)return '<span class="yoy-inline yoy-neutral">—</span>';return '<span class="yoy-inline '+(rate>0?'yoy-up':'yoy-down')+'">'+(rate>0?'↑':'↓')+' '+(Math.abs(rate)*100).toFixed(1)+'%</span>'};const alignStickyColumns=()=>{const cpaHeader=table.querySelector('th.cpa-yoy');if(cpaHeader)table.style.setProperty('--hardware-cpa-yoy-width',Math.ceil(cpaHeader.getBoundingClientRect().width)+'px')};const enhance=()=>{const header=table.tHead?.rows[0],unitsHeader=header?.querySelector('[data-sort-key="unitsYoy"]');if(unitsHeader){unitsHeader.classList.add('units-yoy');if(!header.querySelector('[data-sort-key="cpaYoy"]')){const cpaHeader=document.createElement('th');cpaHeader.rowSpan=2;cpaHeader.className='year-yoy cpa-yoy';cpaHeader.dataset.sortKey='cpaYoy';cpaHeader.textContent='CPA同比';unitsHeader.after(cpaHeader)}}body.querySelectorAll('tr').forEach(row=>{const unitsCell=row.cells[13];if(unitsCell)unitsCell.classList.add('units-yoy');if(row.cells.length<15){const cpaCell=document.createElement('td');cpaCell.className='year-yoy cpa-yoy yoy-cell';cpaCell.innerHTML=yoy(parseValue(row.cells[10]),parseValue(row.cells[4]));row.append(cpaCell)}});requestAnimationFrame(alignStickyColumns)};enhance();new MutationObserver(enhance).observe(body,{childList:true});window.addEventListener('resize',alignStickyColumns)})();
+</script>
+<style id="section-notes-style">
+.section-note-card{position:relative}
+.section-note-host{position:relative}
+.section-note-edit,.section-note-save,.section-note-cancel,.section-note-clear{
+  border:1px solid #c9d5df;
+  border-radius:6px;
+  padding:5px 10px;
+  background:#fff;
+  color:#35546e;
+  font:inherit;
+  font-size:11px;
+  font-weight:800;
+  line-height:1.2;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.section-note-edit{margin-left:auto;flex:0 0 auto}
+.section-note-edit:hover,.section-note-save:hover,.section-note-cancel:hover,.section-note-clear:hover{background:#eef6fb;border-color:#8fb5d0}
+.section-note-fallback-edit{position:absolute;top:12px;right:14px;z-index:1}
+.section-note-editor{display:grid;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed #b9c7d3}
+.section-note-input{width:100%;min-height:68px;resize:vertical;border:1px solid #b9c7d3;border-radius:6px;padding:8px 10px;background:#fbfdff;color:#243746;font:inherit;font-size:12px;line-height:1.55;outline:0}
+.section-note-input:focus{border-color:#5895c2;box-shadow:0 0 0 2px rgba(88,149,194,.14)}
+.section-note-actions{display:flex;align-items:center;gap:7px}
+.section-note-save{background:#2f73a5;border-color:#2f73a5;color:#fff}
+.section-note-save:hover{background:#245f8a;border-color:#245f8a;color:#fff}
+.section-note-clear{margin-left:auto;color:#9b4d42}
+.section-note-display{margin-top:14px;padding:10px 12px;border-left:3px solid #6a9fc7;background:#f4f8fb;color:#465966;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.section-note-display[hidden],.section-note-editor[hidden]{display:none!important}
+@media(max-width:640px){
+  .section-note-edit{padding:4px 8px;font-size:10px}
+  .section-note-fallback-edit{top:10px;right:10px}
+  .section-note-display{font-size:11px}
+}
+</style>
+<script id="section-notes-script">
+(()=>{
+  const STORAGE_KEY='ihealth-q3-report-notes-v1';
+  const targetSelector='.section.report-section .card, .section.report-section .market-category-card';
+  const titleSelectors=[
+    ':scope > .block-head h3',
+    ':scope > .panel-title strong',
+    ':scope > .panel-title h3',
+    ':scope > .market-overview-head h3',
+    ':scope > .market-category-title b',
+    ':scope > h3',
+    ':scope > h2'
+  ];
+  const store=()=>{
+    try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')||{}}
+    catch(_){return {}}
+  };
+  const saveStore=data=>{
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
+    catch(_){/* Private browsing or storage restrictions should not break the report. */}
+  };
+  const cleanText=value=>String(value||'').replace(/\s+/g,' ').trim();
+  const findTitle=card=>{
+    for(const selector of titleSelectors){
+      const element=card.querySelector(selector);
+      if(element&&cleanText(element.textContent))return element;
+    }
+    const previousTitle=card.previousElementSibling?.matches('.subsection-title')
+      ?card.previousElementSibling.querySelector('h3')
+      :null;
+    if(previousTitle&&cleanText(previousTitle.textContent))return previousTitle;
+    return null;
+  };
+  const getSectionId=card=>card.closest('.report-section')?.id||'report';
+  const getNoteKey=(card,title)=>{
+    if(!card.dataset.noteKey){
+      const titleText=cleanText(title.textContent);
+      const sameTitles=[...document.querySelectorAll(targetSelector)].filter(item=>{
+        const itemTitle=findTitle(item);
+        return itemTitle&&getSectionId(item)===getSectionId(card)&&cleanText(itemTitle.textContent)===titleText;
+      });
+      const ordinal=Math.max(0,sameTitles.indexOf(card))+1;
+      card.dataset.noteKey=`${getSectionId(card)}::${titleText}::${ordinal}`;
+    }
+    return card.dataset.noteKey;
+  };
+  const getHost=(card,title)=>{
+    const host=title.closest('.block-head,.panel-title,.market-overview-head,.market-category-title');
+    return host&&host.parentElement===card?host:card;
+  };
+  const makeButton=(label,className)=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className=className;
+    button.textContent=label;
+    return button;
+  };
+  const setupCard=card=>{
+    if(!(card instanceof HTMLElement)||card.dataset.noteReady==='true')return;
+    const title=findTitle(card);
+    if(!title)return;
+    const noteKey=getNoteKey(card,title);
+    const host=getHost(card,title);
+    host.classList.add('section-note-host');
+    const edit=makeButton('编辑','section-note-edit');
+    edit.setAttribute('aria-label',`编辑${cleanText(title.textContent)}备注`);
+    if(host===card){
+      edit.classList.add('section-note-fallback-edit');
+      card.classList.add('section-note-card');
+    }
+    host.append(edit);
+    const editor=document.createElement('div');
+    editor.className='section-note-editor';
+    editor.hidden=true;
+    const input=document.createElement('textarea');
+    input.className='section-note-input';
+    input.placeholder='输入本版块的注释或备注';
+    input.setAttribute('aria-label',`${cleanText(title.textContent)}备注内容`);
+    const actions=document.createElement('div');
+    actions.className='section-note-actions';
+    const save=makeButton('保存','section-note-save');
+    const cancel=makeButton('取消','section-note-cancel');
+    const clear=makeButton('清除备注','section-note-clear');
+    actions.append(save,cancel,clear);
+    editor.append(input,actions);
+    card.append(editor);
+    const display=document.createElement('div');
+    display.className='section-note-display';
+    display.hidden=true;
+    display.setAttribute('role','note');
+    card.append(display);
+    const render=()=>{
+      const value=String(store()[noteKey]||'');
+      display.textContent=value;
+      display.hidden=!value;
+    };
+    const openEditor=()=>{
+      input.value=String(store()[noteKey]||'');
+      editor.hidden=false;
+      edit.hidden=true;
+      input.focus();
+    };
+    const closeEditor=()=>{
+      editor.hidden=true;
+      edit.hidden=false;
+    };
+    edit.addEventListener('click',openEditor);
+    cancel.addEventListener('click',()=>{closeEditor();render()});
+    save.addEventListener('click',()=>{
+      const data=store();
+      const value=input.value.trim();
+      if(value)data[noteKey]=value;
+      else delete data[noteKey];
+      saveStore(data);
+      closeEditor();
+      render();
+    });
+    clear.addEventListener('click',()=>{
+      const data=store();
+      delete data[noteKey];
+      saveStore(data);
+      input.value='';
+      closeEditor();
+      render();
+    });
+    card.dataset.noteReady='true';
+    render();
+  };
+  const scan=()=>document.querySelectorAll(targetSelector).forEach(setupCard);
+  scan();
+  new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});
+})();
 </script></body></html>
